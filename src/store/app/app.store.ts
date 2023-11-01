@@ -3,6 +3,7 @@ import { immer } from 'zustand/middleware/immer'
 import { shallow } from 'zustand/shallow'
 
 import { AppState, GridCell } from './app.state'
+import { ESign } from '../../models/Sign'
 
 export const useAppStore = createWithEqualityFn<AppState>()(
   immer((set, get) => ({
@@ -17,7 +18,7 @@ export const useAppStore = createWithEqualityFn<AppState>()(
     timeoutThreshold: 0,
     remainingSeconds: 0,
 
-    _isXTurn: true,
+    _currentTurn: ESign.X,
     _grid: [],
 
     initializeGame(gridCapacity = 3, timeout = 30) {
@@ -49,8 +50,8 @@ export const useAppStore = createWithEqualityFn<AppState>()(
 
     makeMove(x, y) {
       set(state => {
-        state._grid[x][y].isX = get()._isXTurn
-        state._isXTurn = !get()._isXTurn
+        state._grid[x][y].checkedSign = get()._currentTurn
+        state._currentTurn = get()._currentTurn === ESign.X ? ESign.O : ESign.X
       })
 
       get().resetTimer()

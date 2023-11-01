@@ -1,3 +1,5 @@
+import { ESign } from '../../models/Sign'
+
 export interface User {
   name?: string
   scores: number
@@ -6,13 +8,13 @@ export interface User {
 export interface GridCell {
   x: number
   y: number
-  isX?: boolean
+  checkedSign?: ESign
 }
 
 export interface AppState {
   _grid: GridCell[][]
   _timerId?: number
-  _isXTurn: boolean
+  _currentTurn: ESign
 
   /**
    * The total seconds for a turn.

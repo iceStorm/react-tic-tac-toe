@@ -6,20 +6,19 @@ import { useAppStore } from './store/app/app.store'
 
 import { Header } from './components/Header/Header.tsx'
 
-import './App.css'
 import { Cell } from './components/Cell.tsx/Cell.tsx'
 import { CountDown } from './components/CountDown/CountDown.tsx'
 
 function App() {
-  const [grid, isXTurn, makeMove, initializeGame] = useAppStore(state => [
+  const [grid, currentTurn, makeMove, initializeGame] = useAppStore(state => [
     state._grid,
-    state._isXTurn,
+    state._currentTurn,
     state.makeMove,
     state.initializeGame,
   ])
 
   useEffect(() => {
-    initializeGame(3, 10)
+    initializeGame(5, 15)
   }, [initializeGame])
 
   console.log('app renders...')
@@ -27,15 +26,17 @@ function App() {
   const [gridWidth, setGridWidth] = useState(0)
   const gridRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
-    const handleWindowSizeChange = () => {
-      console.log('size:', gridRef.current?.getBoundingClientRect().width)
+  const handleWindowSizeChange = () => {
+    const maximumSize = Math.min(gridRef.current?.offsetHeight ?? 0, gridRef.current?.offsetWidth ?? 0)
+    console.log('size:', maximumSize)
 
-      setGridWidth(gridRef.current?.clientWidth ?? 0)
-    }
+    setGridWidth(maximumSize)
+  }
+
+  useEffect(() => {
+    handleWindowSizeChange()
 
     window.addEventListener('resize', handleWindowSizeChange)
-    handleWindowSizeChange()
 
     return () => {
       document.removeEventListener('resize', handleWindowSizeChange)
@@ -43,24 +44,26 @@ function App() {
   }, [])
 
   return (
-    <div className={clsx('h-screen mx-auto px-10', 'flex flex-col gap-16 items-center justify-center', 'bg-gray-50')}>
-      <div ref={gridRef} className={clsx('container p-0', 'border border-gray-300 rounded-lg')}>
+    <div className={clsx('h-screen mx-auto p-10', 'flex flex-col gap-16 items-center justify-center', 'bg-gray-50')}>
+      <Header />
+
+      <div ref={gridRef} className="flex-1 container p-0">
         <div
-          className="w-full grid justify-items-center"
+          className="grid justify-center"
           style={{
             gridTemplateColumns: `repeat(${grid.length}, ${gridWidth / grid.length}px)`,
             gridTemplateRows: `repeat(${grid.length}, ${gridWidth / grid.length}px)`,
           }}
         >
           {grid.map(row => {
-            return row.map(({ x, y, isX }) => {
+            return row.map(({ x, y, checkedSign }) => {
               return (
                 <Cell
                   key={`cell_${x}_${y}`}
                   x={x}
                   y={y}
-                  isX={isX}
-                  isXTurn={isXTurn}
+                  checkedSign={checkedSign}
+                  currentTurn={currentTurn}
                   capacity={grid.length}
                   lineWeight={5}
                   onClick={() => makeMove(x, y)}
@@ -71,9 +74,34 @@ function App() {
         </div>
       </div>
 
-      <CountDown />
+      {/* <div ref={gridRef} className={clsx('flex-1 container p-0', 'border-4 border-gray-300 rounded-lg')}>
+        <div
+          className="w-full grid justify-items-center"
+          style={{
+            gridTemplateColumns: `repeat(${grid.length}, ${gridWidth / grid.length}px)`,
+            gridTemplateRows: `repeat(${grid.length}, ${gridWidth / grid.length}px)`,
+          }}
+        >
+          {grid.map(row => {
+            return row.map(({ x, y, checkedSign }) => {
+              return (
+                <Cell
+                  key={`cell_${x}_${y}`}
+                  x={x}
+                  y={y}
+                  checkedSign={checkedSign}
+                  currentTurn={currentTurn}
+                  capacity={grid.length}
+                  lineWeight={5}
+                  onClick={() => makeMove(x, y)}
+                />
+              )
+            })
+          })}
+        </div>
+      </div> */}
 
-      <Header />
+      <CountDown />
     </div>
   )
 }
