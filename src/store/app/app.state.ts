@@ -1,5 +1,6 @@
 export interface User {
-  name: string
+  name?: string
+  scores: number
 }
 
 export interface GridCell {
@@ -11,8 +12,9 @@ export interface GridCell {
 export interface AppState {
   _grid: GridCell[][]
 
-  firstUser?: User
-  secondUser?: User
+  ties: number
+  xUser: User
+  oUser: User
 
   initializeGame(gridCapacity?: number): void
 

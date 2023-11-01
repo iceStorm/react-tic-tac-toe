@@ -6,6 +6,14 @@ import { AppState, GridCell } from './app.state'
 
 export const useAppStore = createWithEqualityFn<AppState>()(
   immer((set, get) => ({
+    ties: 0,
+    xUser: {
+      scores: 0,
+    },
+    oUser: {
+      scores: 0,
+    },
+
     _grid: [],
 
     initializeGame(gridCapacity = 3) {
