@@ -1,25 +1,37 @@
 import { useEffect, useRef, useState } from 'react'
+
 import { clsx } from 'clsx'
 
 import { useAppStore } from './store/app/app.store'
-import { Cell } from './components/Cell.tsx'
 
-import './App.css'
 import { Header } from './components/Header/Header.tsx'
 
-function App() {
-  const [grid, initializeGame, makeMove] = useAppStore(state => [state._grid, state.initializeGame, state.makeMove])
+import './App.css'
+import { Cell } from './components/Cell.tsx/Cell.tsx'
+import { CountDown } from './components/CountDown/CountDown.tsx'
 
-  const gridRef = useRef<HTMLDivElement>(null)
-  const [gridWidth, setGridWidth] = useState(0)
+function App() {
+  const [grid, isXTurn, makeMove, initializeGame] = useAppStore(state => [
+    state._grid,
+    state._isXTurn,
+    state.makeMove,
+    state.initializeGame,
+  ])
 
   useEffect(() => {
-    initializeGame(5)
+    initializeGame(3, 10)
   }, [initializeGame])
+
+  console.log('app renders...')
+
+  const [gridWidth, setGridWidth] = useState(0)
+  const gridRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const handleWindowSizeChange = () => {
-      setGridWidth(gridRef.current?.getBoundingClientRect().width ?? 0)
+      console.log('size:', gridRef.current?.getBoundingClientRect().width)
+
+      setGridWidth(gridRef.current?.clientWidth ?? 0)
     }
 
     window.addEventListener('resize', handleWindowSizeChange)
@@ -30,13 +42,10 @@ function App() {
     }
   }, [])
 
-  console.log('app renders...')
-
   return (
-    <div className={clsx('h-screen mx-auto', 'flex flex-col gap-36 items-center justify-center')}>
-      <div className="container">
+    <div className={clsx('h-screen mx-auto px-10', 'flex flex-col gap-16 items-center justify-center', 'bg-gray-50')}>
+      <div ref={gridRef} className={clsx('container p-0', 'border border-gray-300 rounded-lg')}>
         <div
-          ref={gridRef}
           className="w-full grid justify-items-center"
           style={{
             gridTemplateColumns: `repeat(${grid.length}, ${gridWidth / grid.length}px)`,
@@ -51,8 +60,9 @@ function App() {
                   x={x}
                   y={y}
                   isX={isX}
+                  isXTurn={isXTurn}
                   capacity={grid.length}
-                  lineWeight={1}
+                  lineWeight={5}
                   onClick={() => makeMove(x, y)}
                 />
               )
@@ -60,6 +70,8 @@ function App() {
           })}
         </div>
       </div>
+
+      <CountDown />
 
       <Header />
     </div>

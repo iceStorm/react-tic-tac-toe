@@ -14,9 +14,13 @@ export const useAppStore = createWithEqualityFn<AppState>()(
       scores: 0,
     },
 
+    timeoutThreshold: 0,
+    remainingSeconds: 0,
+
+    _isXTurn: true,
     _grid: [],
 
-    initializeGame(gridCapacity = 3) {
+    initializeGame(gridCapacity = 3, timeout = 30) {
       //   if (get()._grid.length) {
       //     return
       //   }
@@ -37,12 +41,41 @@ export const useAppStore = createWithEqualityFn<AppState>()(
         console.warn('[GAME] Grid:', grid)
 
         state._grid = grid
+        state.timeoutThreshold = timeout
       })
+
+      get().resetTimer()
     },
 
     makeMove(x, y) {
       set(state => {
-        state._grid[x][y].isX = true
+        state._grid[x][y].isX = get()._isXTurn
+        state._isXTurn = !get()._isXTurn
+      })
+
+      get().resetTimer()
+    },
+
+    resetTimer() {
+      clearInterval(get()._timerId)
+
+      set(state => {
+        state.remainingSeconds = get().timeoutThreshold
+      })
+
+      const timerId = setInterval(() => {
+        if (get().remainingSeconds === 0) {
+          console.warn('GAME] Current turn has expired')
+          return clearInterval(timerId)
+        }
+
+        set(state => {
+          state.remainingSeconds -= 1
+        })
+      }, 1000)
+
+      set(state => {
+        state._timerId = timerId
       })
     },
   })),

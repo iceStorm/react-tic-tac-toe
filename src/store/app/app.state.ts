@@ -11,12 +11,26 @@ export interface GridCell {
 
 export interface AppState {
   _grid: GridCell[][]
+  _timerId?: number
+  _isXTurn: boolean
+
+  /**
+   * The total seconds for a turn.
+   */
+  timeoutThreshold: number
+
+  /**
+   * The remaining seconds for the current turn.
+   */
+  remainingSeconds: number
 
   ties: number
   xUser: User
   oUser: User
 
-  initializeGame(gridCapacity?: number): void
+  initializeGame(gridCapacity?: number, timeout?: number): void
+
+  resetTimer(): void
 
   /**
    * Place a move on the grid.
