@@ -1,5 +1,10 @@
 import { ESign } from '../../models/Sign'
 
+export enum GameMode {
+  '3vs3' = 3,
+  '5vs5' = 5,
+}
+
 export interface User {
   name?: string
   scores: number
@@ -12,6 +17,7 @@ export interface GridCell {
 }
 
 export interface AppState {
+  _mode?: GameMode
   _grid: GridCell[][]
   _timerId?: number
   _currentTurn: ESign
@@ -30,7 +36,7 @@ export interface AppState {
   xUser: User
   oUser: User
 
-  initializeGame(gridCapacity?: number, timeout?: number): void
+  initializeGame(mode: GameMode, timeout?: number): void
 
   resetTimer(): void
 

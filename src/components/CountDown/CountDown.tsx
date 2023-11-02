@@ -8,7 +8,8 @@ export function CountDown() {
   return (
     <div
       className={clsx(
-        'bg-white border rounded-full shadow-2xl',
+        'bg-white border rounded-full',
+        // 'shadow-2xl',
         'pl-3.5 pr-5 py-3',
         'flex items-center justify-start gap-2',
       )}

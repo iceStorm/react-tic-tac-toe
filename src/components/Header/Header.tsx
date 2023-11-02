@@ -1,9 +1,14 @@
 import { clsx } from 'clsx'
 
-import { useAppStore } from '../../store/app/app.store'
 import { ESign } from '../../models/Sign'
+import { useAppStore } from '../../store/app/app.store'
+import { CountDown } from '../CountDown'
 
-export const Header = () => {
+interface HeaderProps {
+  width: number
+}
+
+export const Header = ({ width }: HeaderProps) => {
   const [xUser, oUser, ties] = useAppStore(state => [state.xUser, state.oUser, state.ties])
   const [currentTurn, timeoutThreshold, remainingSeconds] = useAppStore(state => [
     state._currentTurn,
@@ -18,9 +23,16 @@ export const Header = () => {
   })
 
   return (
-    <header className={clsx('container p-0 relative')}>
-      <div className={clsx('flex justify-between items-center', 'border rounded-lg bg-white', 'overflow-hidden')}>
-        <div className={clsx('flex-1 text-left py-5 px-10 border-r relative')}>
+    <header className={clsx('container p-0 relative')} style={{ width }}>
+      <div
+        className={clsx(
+          'flex justify-between items-center',
+          'border rounded-lg bg-white',
+          'overflow-hidden',
+          'shadow-2xl shadow-gray-200',
+        )}
+      >
+        <div className={clsx('flex-1 text-center py-5 px-3 lg:px-10 border-r relative')}>
           {currentTurn === ESign.X && (
             <div
               className={clsx(
@@ -33,7 +45,7 @@ export const Header = () => {
           )}
 
           <div className="relative">
-            <p className="font-light flex items-center gap-2">
+            <p className="font-light flex items-center justify-center gap-2">
               <span>Player</span>
               <span className="text-2xl">{ESign.X}</span>
             </p>
@@ -42,31 +54,35 @@ export const Header = () => {
           </div>
         </div>
 
-        <div className="h-full flex-1 text-center py-5 px-10 border-r">
+        <div className="h-full flex-1 text-center py-5 px-3 lg:px-10">
           <p className="font-light">Ties</p>
           <p className="text-3xl font-bold">{ties}</p>
         </div>
 
-        <div className={clsx('flex-1 text-right py-5 px-10 relative')}>
+        <div className={clsx('flex-1 text-center py-5 px-3 lg:px-10 relative border-l')}>
           {currentTurn === ESign.O && (
             <div
               className={clsx(
                 countDownColor,
-                'h-full absolute left-0 top-0 bottom-0 right-0',
-                'transition-all duration-300 -rotate-180',
+                'h-full w-full absolute right-0 top-0 bottom-0',
+                'transition-all duration-300',
               )}
-              style={{ width: `${(remainingSeconds / timeoutThreshold) * 100}%` }}
+              style={{ right: `-${((timeoutThreshold - remainingSeconds) / timeoutThreshold) * 100}%` }}
             />
           )}
 
           <div className="relative">
-            <p className="font-light flex items-center justify-end gap-2">
+            <p className="font-light flex items-center justify-center gap-2">
               Player <span className="text-2xl">{ESign.O}</span>
             </p>
 
             <p className="text-3xl font-bold">{oUser.scores}</p>
           </div>
         </div>
+      </div>
+
+      <div className="flex justify-center mt-16 -mb-10">
+        <CountDown />
       </div>
     </header>
   )

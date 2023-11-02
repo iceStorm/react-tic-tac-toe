@@ -1,98 +1,105 @@
-import { createWithEqualityFn } from 'zustand/traditional'
+import { createJSONStorage, persist } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
 import { shallow } from 'zustand/shallow'
+import { createWithEqualityFn } from 'zustand/traditional'
 
-import { AppState, GridCell } from './app.state'
 import { ESign } from '../../models/Sign'
+import { AppState, GridCell } from './app.state'
 
 export const useAppStore = createWithEqualityFn<AppState>()(
-  immer((set, get) => ({
-    ties: 0,
-    xUser: {
-      scores: 0,
-    },
-    oUser: {
-      scores: 0,
-    },
+  persist(
+    immer((set, get) => ({
+      ties: 0,
+      xUser: {
+        scores: 0,
+      },
+      oUser: {
+        scores: 0,
+      },
 
-    timeoutThreshold: 0,
-    remainingSeconds: 999,
+      timeoutThreshold: 0,
+      remainingSeconds: 999,
 
-    _currentTurn: ESign.X,
-    _grid: [],
+      _currentTurn: ESign.X,
+      _grid: [],
 
-    initializeGame(gridCapacity = 3, timeout = 30) {
-      //   if (get()._grid.length) {
-      //     return
-      //   }
+      initializeGame(mode, timeout = 30) {
+        //   if (get()._grid.length) {
+        //     return
+        //   }
 
-      console.warn('[GAME] Initialized')
+        console.warn('[GAME] Initialized')
 
-      const initializeGrid = () => {
-        const grid: Array<GridCell[]> = []
+        const initializeGrid = () => {
+          const grid: Array<GridCell[]> = []
 
-        for (let x = 0; x < gridCapacity; x++) {
-          grid.push([])
+          for (let x = 0; x < mode; x++) {
+            grid.push([])
 
-          for (let y = 0; y < gridCapacity; y++) {
-            grid[x].push({ x, y } as GridCell)
+            for (let y = 0; y < mode; y++) {
+              grid[x].push({ x, y } as GridCell)
+            }
           }
+
+          return grid
         }
 
-        return grid
-      }
+        const genratedGrid = initializeGrid()
 
-      const genratedGrid = initializeGrid()
-
-      console.warn('[GAME] Grid:', genratedGrid)
-
-      set(state => {
-        state._grid = genratedGrid
-        state.timeoutThreshold = timeout
-      })
-
-      get().resetTimer()
-    },
-
-    makeMove(x, y) {
-      set(state => {
-        state._grid[x][y].checkedSign = get()._currentTurn
-        state._currentTurn = get()._currentTurn === ESign.X ? ESign.O : ESign.X
-      })
-
-      get().resetTimer()
-    },
-
-    resetTimer() {
-      clearInterval(get()._timerId)
-
-      set(state => {
-        state.remainingSeconds = get().timeoutThreshold
-      })
-
-      const timerId = setInterval(() => {
-        if (get().remainingSeconds === 0) {
-          console.warn('GAME] Current turn has expired')
-          return clearInterval(timerId)
-        }
+        console.warn('[GAME] Grid:', genratedGrid)
 
         set(state => {
-          state.remainingSeconds -= 1
+          state._grid = genratedGrid
+          state.timeoutThreshold = timeout
         })
-      }, 1000)
 
-      set(state => {
-        state._timerId = timerId
-      })
+        get().resetTimer()
+      },
+
+      makeMove(x, y) {
+        set(state => {
+          state._grid[x][y].checkedSign = get()._currentTurn
+          state._currentTurn = get()._currentTurn === ESign.X ? ESign.O : ESign.X
+        })
+
+        get().resetTimer()
+      },
+
+      resetTimer() {
+        clearInterval(get()._timerId)
+
+        set(state => {
+          state.remainingSeconds = get().timeoutThreshold
+        })
+
+        const timerId = setInterval(() => {
+          if (get().remainingSeconds === 0) {
+            console.warn('GAME] Current turn has expired')
+            return clearInterval(timerId)
+          }
+
+          set(state => {
+            state.remainingSeconds -= 1
+          })
+        }, 1000)
+
+        set(state => {
+          state._timerId = timerId
+        })
+      },
+
+      _resolveAnswer() {
+        // const results
+
+        //
+        return []
+      },
+    })),
+    {
+      name: 'app-store',
+      storage: createJSONStorage(() => localStorage),
     },
-
-    _resolveAnswer() {
-      // const results
-
-      //
-      return []
-    },
-  })),
+  ),
 
   shallow,
 )

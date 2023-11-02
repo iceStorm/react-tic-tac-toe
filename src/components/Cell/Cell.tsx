@@ -2,18 +2,15 @@ import { clsx } from 'clsx'
 
 import { memo, useState } from 'react'
 
-import { GrClose } from 'react-icons/gr'
 import { FiCircle } from 'react-icons/fi'
+import { GrClose } from 'react-icons/gr'
 
 import { shallow } from 'zustand/shallow'
 
-import { GridCell } from '../../store/app/app.state'
 import { ESign } from '../../models/Sign'
+import { GridCell } from '../../store/app/app.state'
 
 type CellProps = GridCell & {
-  capacity: number
-  lineWeight: number
-
   /**
    * Whether the current turn is for the X user.
    */
@@ -23,7 +20,7 @@ type CellProps = GridCell & {
 }
 
 export const Cell = memo((props: CellProps) => {
-  const { x, y, checkedSign, currentTurn, lineWeight, capacity, onClick } = props
+  const { x, y, checkedSign, currentTurn, onClick } = props
 
   // console.log('cell renders:', x, y, isX)
 
@@ -33,19 +30,20 @@ export const Cell = memo((props: CellProps) => {
   const HoverIcon = currentTurn === ESign.X ? GrClose : FiCircle
 
   return (
-    <div
-      className={clsx(`col_${x}_${y}`, 'w-full h-full p-5', 'hover:bg-gray-200', 'border-gray-400')}
-      style={{
-        borderTopWidth: x > 0 ? `${lineWeight}px` : undefined,
-        borderRightWidth: y > -1 && y < capacity - 1 ? `${lineWeight}px` : undefined,
-      }}
+    <button
+      className={clsx(
+        `col_${x}_${y}`,
+        'w-full h-full p-5 flex items-center justify-center',
+        'bg-gray-200 hover:bg-gray-300',
+      )}
       onClick={checkedSign === undefined ? onClick : undefined}
       onMouseMove={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
+      title={checkedSign ? undefined : `Tap to place an ${currentTurn} here`}
     >
       {Icon && <Icon className="w-full h-full" />}
 
-      {isHovering && checkedSign === undefined && <HoverIcon className="opacity-10 w-full h-full" />}
-    </div>
+      {isHovering && checkedSign === undefined && <HoverIcon className="opacity-20 w-full h-full" />}
+    </button>
   )
 }, shallow)
