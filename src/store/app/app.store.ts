@@ -16,7 +16,7 @@ export const useAppStore = createWithEqualityFn<AppState>()(
     },
 
     timeoutThreshold: 0,
-    remainingSeconds: 0,
+    remainingSeconds: 999,
 
     _currentTurn: ESign.X,
     _grid: [],
@@ -28,7 +28,7 @@ export const useAppStore = createWithEqualityFn<AppState>()(
 
       console.warn('[GAME] Initialized')
 
-      set(state => {
+      const initializeGrid = () => {
         const grid: Array<GridCell[]> = []
 
         for (let x = 0; x < gridCapacity; x++) {
@@ -39,9 +39,15 @@ export const useAppStore = createWithEqualityFn<AppState>()(
           }
         }
 
-        console.warn('[GAME] Grid:', grid)
+        return grid
+      }
 
-        state._grid = grid
+      const genratedGrid = initializeGrid()
+
+      console.warn('[GAME] Grid:', genratedGrid)
+
+      set(state => {
+        state._grid = genratedGrid
         state.timeoutThreshold = timeout
       })
 
@@ -78,6 +84,13 @@ export const useAppStore = createWithEqualityFn<AppState>()(
       set(state => {
         state._timerId = timerId
       })
+    },
+
+    _resolveAnswer() {
+      // const results
+
+      //
+      return []
     },
   })),
 

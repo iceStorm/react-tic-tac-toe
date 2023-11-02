@@ -18,7 +18,7 @@ function App() {
   ])
 
   useEffect(() => {
-    initializeGame(5, 15)
+    initializeGame(3, 15)
   }, [initializeGame])
 
   console.log('app renders...')
@@ -28,8 +28,6 @@ function App() {
 
   const handleWindowSizeChange = () => {
     const maximumSize = Math.min(gridRef.current?.offsetHeight ?? 0, gridRef.current?.offsetWidth ?? 0)
-    console.log('size:', maximumSize)
-
     setGridWidth(maximumSize)
   }
 
@@ -73,33 +71,6 @@ function App() {
           })}
         </div>
       </div>
-
-      {/* <div ref={gridRef} className={clsx('flex-1 container p-0', 'border-4 border-gray-300 rounded-lg')}>
-        <div
-          className="w-full grid justify-items-center"
-          style={{
-            gridTemplateColumns: `repeat(${grid.length}, ${gridWidth / grid.length}px)`,
-            gridTemplateRows: `repeat(${grid.length}, ${gridWidth / grid.length}px)`,
-          }}
-        >
-          {grid.map(row => {
-            return row.map(({ x, y, checkedSign }) => {
-              return (
-                <Cell
-                  key={`cell_${x}_${y}`}
-                  x={x}
-                  y={y}
-                  checkedSign={checkedSign}
-                  currentTurn={currentTurn}
-                  capacity={grid.length}
-                  lineWeight={5}
-                  onClick={() => makeMove(x, y)}
-                />
-              )
-            })
-          })}
-        </div>
-      </div> */}
 
       <CountDown />
     </div>

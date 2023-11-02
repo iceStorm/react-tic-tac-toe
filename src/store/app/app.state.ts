@@ -40,4 +40,10 @@ export interface AppState {
    * @param y the y coordinate
    */
   makeMove(x: number, y: number): void
+
+  /**
+   * To find whether the current turn is resolved.
+   * @returns {number[]} An array which holds the coordiates of the 3 cells.
+   */
+  _resolveAnswer(): number[]
 }

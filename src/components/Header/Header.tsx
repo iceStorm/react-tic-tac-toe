@@ -12,13 +12,13 @@ export const Header = () => {
   ])
 
   const countDownColor = clsx({
-    'bg-amber-200': remainingSeconds >= 5 && remainingSeconds <= 10,
+    'bg-green-200': remainingSeconds > 10,
+    'bg-amber-100': remainingSeconds > 5 && remainingSeconds <= 10,
     'bg-red-300': remainingSeconds <= 5,
-    'bg-blue-200': remainingSeconds > 5,
   })
 
   return (
-    <header className={clsx('container p-0')}>
+    <header className={clsx('container p-0 relative')}>
       <div className={clsx('flex justify-between items-center', 'border rounded-lg bg-white', 'overflow-hidden')}>
         <div className={clsx('flex-1 text-left py-5 px-10 border-r relative')}>
           {currentTurn === ESign.X && (
@@ -42,7 +42,7 @@ export const Header = () => {
           </div>
         </div>
 
-        <div className="h-full flex-[0.5] text-center py-5 px-10 border-r">
+        <div className="h-full flex-1 text-center py-5 px-10 border-r">
           <p className="font-light">Ties</p>
           <p className="text-3xl font-bold">{ties}</p>
         </div>
