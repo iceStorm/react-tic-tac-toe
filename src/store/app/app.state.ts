@@ -5,32 +5,48 @@ export enum GameMode {
   '5vs5' = 5,
 }
 
+export type WinnerDirection = 'horizontal' | 'vertical' | 'diagonal-to-left' | 'diagonal-to-right'
+
+export type WinnerInformation = {
+  direction: WinnerDirection
+  coordinates: number[][]
+}
+
 export interface User {
   name?: string
   scores: number
+  moves: ESign[][]
 }
 
 export interface GridCell {
-  x: number
-  y: number
   checkedSign?: ESign
+  key: string
 }
 
 export interface AppState {
-  _mode?: GameMode
-  _grid: GridCell[][]
+  _mode: GameMode
+  _grid: Array<Array<GridCell>>
   _timerId?: number
   _currentTurn: ESign
 
+  winnerData?: WinnerInformation | null
+
   /**
-   * The total seconds for a turn.
+   * The total seconds for a turn. Can be changed when a user just won
    */
   timeoutThreshold: number
+
+  /**
+   * The total seconds for a fresh turn.
+   */
+  initialTimeoutThreshold: number
 
   /**
    * The remaining seconds for the current turn.
    */
   remainingSeconds: number
+
+  currentUser(): User
 
   ties: number
   xUser: User
@@ -38,7 +54,7 @@ export interface AppState {
 
   initializeGame(mode: GameMode, timeout?: number): void
 
-  resetTimer(): void
+  _resetTimer(timeout?: number): void
 
   /**
    * Place a move on the grid.
@@ -49,7 +65,12 @@ export interface AppState {
 
   /**
    * To find whether the current turn is resolved.
-   * @returns {number[]} An array which holds the coordiates of the 3 cells.
    */
-  _resolveAnswer(): number[]
+  _isCurrentUserWins(): WinnerInformation | false | undefined
+
+  _generateGridCells(): Array<GridCell[]>
+
+  _generateUserMoves(): ESign[][]
+
+  _resetMoves(): void
 }

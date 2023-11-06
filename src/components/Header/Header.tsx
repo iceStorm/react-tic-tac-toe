@@ -1,5 +1,7 @@
 import { clsx } from 'clsx'
 
+import TextTransition from 'react-text-transition'
+
 import { ESign } from '../../models/Sign'
 import { useAppStore } from '../../store/app/app.store'
 import { CountDown } from '../CountDown'
@@ -50,13 +52,13 @@ export const Header = ({ width }: HeaderProps) => {
               <span className="text-2xl">{ESign.X}</span>
             </p>
 
-            <p className="text-3xl font-bold">{xUser.scores}</p>
+            <TextTransition className="text-3xl font-bold justify-center">{xUser.scores}</TextTransition>
           </div>
         </div>
 
         <div className="h-full flex-1 text-center py-5 px-3 lg:px-10">
           <p className="font-light">Ties</p>
-          <p className="text-3xl font-bold">{ties}</p>
+          <TextTransition className="text-3xl font-bold justify-center">{ties}</TextTransition>
         </div>
 
         <div className={clsx('flex-1 text-center py-5 px-3 lg:px-10 relative border-l')}>
@@ -76,7 +78,7 @@ export const Header = ({ width }: HeaderProps) => {
               Player <span className="text-2xl">{ESign.O}</span>
             </p>
 
-            <p className="text-3xl font-bold">{oUser.scores}</p>
+            <TextTransition className="text-3xl font-bold justify-center">{oUser.scores}</TextTransition>
           </div>
         </div>
       </div>

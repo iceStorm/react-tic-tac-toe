@@ -12,7 +12,7 @@ function App() {
 
   const [gridWidth, setGridWidth] = useState(0)
 
-  console.log('app renders...')
+  // console.log('app renders...')
 
   useEffect(() => {
     initializeGame(GameMode['3vs3'], 15)
@@ -21,8 +21,6 @@ function App() {
   return (
     <div className={clsx('h-screen mx-auto p-10', 'flex flex-col gap-16 items-center', 'bg-gray-100')}>
       <Header width={gridWidth} />
-
-      {/* <CountDown /> */}
 
       {grid.length ? <Grid onGridWidthDefined={setGridWidth} /> : null}
     </div>
