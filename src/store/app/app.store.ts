@@ -61,11 +61,11 @@ export const useAppStore = createWithEqualityFn(
         }
       })
 
-      const currentUser = get().currentUser()
-      console.log(currentTurn, 'moves:', currentUser.moves)
+      // const currentUser = get().currentUser()
+      // console.log(currentTurn, 'moves:', currentUser.moves)
 
       const isWinner = get()._isCurrentUserWins()
-      console.log(currentTurn, 'isWinner:', isWinner)
+      // console.log(currentTurn, 'isWinner:', isWinner)
 
       const winnerWaitingTimeOut = 3
       if (isWinner !== false) {
@@ -138,6 +138,14 @@ export const useAppStore = createWithEqualityFn(
       console.warn('[GRID RESET]', get()._grid, get().xUser, get().oUser)
     },
 
+    _switchTurn() {
+      set(state => {
+        state._currentTurn = get()._currentTurn === ESign.X ? ESign.O : ESign.X
+      })
+
+      get()._resetTimer()
+    },
+
     _resetTimer(timeout?: number) {
       clearInterval(get()._timerId)
 
@@ -149,6 +157,7 @@ export const useAppStore = createWithEqualityFn(
       const timerId = setInterval(() => {
         if (get().remainingSeconds === 0) {
           console.warn('GAME] Current turn has expired')
+          get()._switchTurn()
           return clearInterval(timerId)
         }
 

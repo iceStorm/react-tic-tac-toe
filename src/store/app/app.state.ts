@@ -65,6 +65,12 @@ export interface AppState {
 
   /**
    * To find whether the current turn is resolved.
+   * @returns
+   * > `false` means the current turn does not win.
+   *
+   * > `undefined` means both users have finished all moves but end up in ties.
+   *
+   * > `Otherwise` an object that holds the information of the checked cells will be returned.
    */
   _isCurrentUserWins(): WinnerInformation | false | undefined
 
@@ -73,4 +79,9 @@ export interface AppState {
   _generateUserMoves(): ESign[][]
 
   _resetMoves(): void
+
+  /**
+   * When the timer counts to 0, we need to release the turn to the opponent.
+   */
+  _switchTurn(): void
 }

@@ -1,6 +1,7 @@
-import { clsx } from 'clsx'
+import { memo, useState } from 'react'
 
-import { memo, useMemo, useState } from 'react'
+import { clsx } from 'clsx'
+import { motion } from 'framer-motion'
 
 import { AiOutlineClose } from 'react-icons/ai'
 import { BiCircle } from 'react-icons/bi'
@@ -29,44 +30,35 @@ export const Cell = memo((props: CellProps) => {
 
   const disabled = Boolean(winnerData)
 
-  const isHighlighted = useMemo(() => {
-    return winnerData?.coordinates.some(pair => pair[0] === x && pair[1] === y)
-  }, [winnerData?.coordinates, x, y])
+  const title = disabled
+    ? 'Please wait for awhile when we restart the game'
+    : checkedSign
+    ? undefined
+    : `Tap to place an ${currentTurn} here`
+  // const crossLineCoordinates = winnerData?.direction === 'horizontal' ?
 
   // console.log('cell renders:', x, y, isX)
 
   return (
-    <button
+    <motion.button
       className={clsx(
         `cell_${x}_${y}`,
         'w-full h-full p-5 flex items-center justify-center',
         'bg-gray-200 hover:bg-gray-300',
         {
           'cursor-not-allowed': disabled,
-          'winner-cell': isHighlighted,
         },
       )}
-      onClick={checkedSign === undefined || !winnerData?.direction ? onClick : undefined}
-      onMouseMove={() => setIsHovering(true)}
+      transition={{ duration: 2, repeat: Infinity }}
+      onClick={checkedSign === undefined ? onClick : undefined}
       onMouseLeave={() => setIsHovering(false)}
-      title={
-        disabled
-          ? 'Please wait for awhile when we restart the game'
-          : checkedSign
-          ? undefined
-          : `Tap to place an ${currentTurn} here`
-      }
+      onMouseMove={() => setIsHovering(true)}
       disabled={disabled}
+      title={title}
     >
-      {Icon && (
-        <Icon
-          className={clsx('w-full h-full', {
-            'text-green-500': isHighlighted,
-          })}
-        />
-      )}
+      {Icon && <Icon className={clsx('w-full h-full')} />}
 
       {isHovering && checkedSign === undefined && <HoverIcon className="opacity-20 w-full h-full" />}
-    </button>
+    </motion.button>
   )
 })
